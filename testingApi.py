@@ -29,7 +29,6 @@ fig.add_trace(go.Candlestick(x=data.index,
 fig.update_layout(
     title='Uber live share price evolution',
     yaxis_title='Stock Price (USD per Shares)')
-
 # X-Axes
 fig.update_xaxes(
     rangeslider_visible=True,
