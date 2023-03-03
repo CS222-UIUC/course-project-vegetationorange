@@ -3,3 +3,6 @@ include/
 lib/
 .venv/
 .vscode/
+../.venv/
+apis/api_keys.py
+apis/__pycache__/
