@@ -1,12 +1,14 @@
 bin/
 include/
-<<<<<<< templating-html-webpage
+templating-html-webpage
 lib/
-=======
+link-firebase
+*.json
 lib/
 .venv/
 .vscode/
 ../.venv/
 apis/api_keys.py
 apis/__pycache__/
->>>>>>> main
+main
+
