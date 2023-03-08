@@ -1,4 +1,4 @@
-link-firebase
+from flask import Flask, render_template
 
 import firebase_admin
 from firebase_admin import credentials, auth, db
@@ -7,8 +7,6 @@ import json
 
 f = open("SECRET.json")
 data = json.load(f)
-
-
 
 
 app = Flask(__name__)
