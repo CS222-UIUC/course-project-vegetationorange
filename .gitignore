@@ -1,8 +1,12 @@
 bin/
 include/
+<<<<<<< templating-html-webpage
+lib/
+=======
 lib/
 .venv/
 .vscode/
 ../.venv/
 apis/api_keys.py
 apis/__pycache__/
+>>>>>>> main
