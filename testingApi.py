@@ -12,10 +12,17 @@ import yfinance as yf
 import plotly.graph_objs as go
 
 
-data = yf.download(tickers='UBER', period='5d', interval='5m')
-#Print data
+val = input("Enter your stock name, enter False if you want to exit: ")
+data = yf.download(tickers=val, period='5d', interval='5m')
 print(data)
+while (val != "False"):
+    val = input("Enter your stock name, enter False if you want to exit: ")
+    data2 = yf.download(tickers=val, period='5d', interval='5m')
+    print(val)
+    print(data2)
+
 #declare figure
+
 fig = go.Figure()
 
 #Candlestick
