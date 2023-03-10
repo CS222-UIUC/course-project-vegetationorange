@@ -1,6 +1,6 @@
 import requests
 import json
-from api_keys import FINNHUB_API_KEY
+from apis.api_keys import FINNHUB_API_KEY
 
 def get_realtime_stock_data(symbol):
     # endpoint for real-time price data
