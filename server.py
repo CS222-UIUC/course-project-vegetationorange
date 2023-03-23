@@ -26,7 +26,7 @@ print(values)
 @app.route("/")
 def start():
     test_object = {}
-
+    test_object["name"] = "CS341"
     test_object["age"] = 99
     return render_template("index.html", obj=test_object)
 
