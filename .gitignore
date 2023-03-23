@@ -11,3 +11,4 @@ lib/
 apis/api_keys.py
 apis/__pycache__/
 main
+myvenv/
