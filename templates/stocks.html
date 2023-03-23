@@ -14,8 +14,10 @@
             <input type="text" name='stock_symbol'><br><br>
         <input type="submit" value="Search">
         </form>
-        {% if 'c' in stock_res %}
+        {% if 'c' in stock_res and stock_res.c != 0 %}
             <h1 >Current price: {{stock_res.c}}</h1>
+        {% elif 'c' in stock_res and stock_res.c == 0 %}
+            <h1 >Please enter a valid stock</h1>
         {% else %}
             <h1 ></h1>
         {% endif %}
