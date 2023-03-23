@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, request, render_template
+import apis.finnhub_requests
 
 import firebase_admin
 from firebase_admin import credentials, auth, db
@@ -30,9 +31,20 @@ def start():
     test_object["age"] = 99
     return render_template("index.html", obj=test_object)
 
+
 @app.route("/signin")
 def signin():
     return render_template("signin.html")
+
+@app.route("/stocks/", methods=["POST", "GET"])
+def stocks():
+    if request.method == "POST":
+        stock_symbol = request.form['stock_symbol']
+        stock_info = json.loads(apis.finnhub_requests.get_realtime_stock_data(stock_symbol))
+        return render_template("stocks.html", stock_res=stock_info)
+    else:
+        temp_obj = {}
+        return render_template("stocks.html", stock_res=temp_obj)
 
 if __name__ == '__main__':
     app.run(host="127.0.0.1", debug=True)
