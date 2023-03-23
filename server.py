@@ -33,6 +33,10 @@ def start():
     test_object["age"] = 99
     return render_template("index.html", obj=test_object)
 
+@app.route("/signin")
+def signin():
+     return render_template("signup.html")
+
 @app.route("/stocks/", methods=["POST", "GET"])
 def stocks():
     if request.method == "POST":
