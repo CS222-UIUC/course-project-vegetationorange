@@ -39,8 +39,13 @@ def signin():
         return render_template("signin.html")
     elif(request.method == "POST"):
         print("Received signin request")
-        print(request.form["username"])
-        print(request.form["password"])
+        username = request.form["username"]
+        password = request.form["password"]
+        ref = db.reference('users/')
+        if(username in ref.get() and password == ref.get()[username]["password"]):
+            print("LOGGED IN")
+        else:
+            print("NOT VALID LOGIN")
         return render_template("signin.html")
 
 @app.route("/signup", methods = ["GET", "POST"])
@@ -48,9 +53,14 @@ def signup():
     if(request.method == "GET"):
         return render_template("signup.html")
     elif(request.method == "POST"):
-        print("Received signup request")
-        print(request.form["username"])
-        print(request.form["password"])
+        username = request.form["username"]
+        password = request.form["password"]
+        ref = db.reference('users/')
+        if(username not in ref.get()):
+            ref.child(username).set({"password": password})
+            print("ACCOUNT CREATED")
+        else:
+            print("ACCOUNT DENIED")
         return render_template("signup.html")
 
 @app.route("/stocks/", methods=["POST", "GET"])
