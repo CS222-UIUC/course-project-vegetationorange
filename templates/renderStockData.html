@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Live Stock Data</title>
+</head>
+<body>
+  <h1>Live Stock Data</h1>
+  <form>
+    <label for="symbol">Enter stock symbol:</label>
+    <input type="text" id="symbol" name="symbol" required>
+    <button type="button" onclick="getStockData()">Get Data</button>
+  </form>
+  <p id="data"></p>
+  <script>
+    function getStockData() {
+      const symbol = document.getElementById('symbol').value;
+      const apiKey = 'S20YZ2IF6355AFQ0';
+      const apiUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`;
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          const price = data['Global Quote']['05. price'];
+          const html = `<p>The most recent stock price for ${symbol} is ${price}</p>`;
+          document.getElementById('data').innerHTML = html;
+        })
+        .catch(error => {
+          const html = `<p>Error: ${error.message}</p>`;
+          document.getElementById('data').innerHTML = html;
+        });
+    }
+  </script>
+</body>
+</html>
