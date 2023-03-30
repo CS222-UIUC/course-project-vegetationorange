@@ -50,6 +50,7 @@ def signin():
 
 @app.route("/signup", methods = ["GET", "POST"])
 def signup():
+
     if(request.method == "GET"):
         return render_template("signup.html")
     elif(request.method == "POST"):
@@ -62,6 +63,7 @@ def signup():
         else:
             print("ACCOUNT DENIED")
         return render_template("signup.html")
+
 
 @app.route("/stocks/", methods=["POST", "GET"])
 def stocks():
