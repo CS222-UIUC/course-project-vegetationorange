@@ -39,7 +39,8 @@ def signin():
 
 @app.route("/signup")
 def signup():
-    return render_template("signup.html")
+     return render_template("signup.html")
+
 
 @app.route("/stocks/", methods=["POST", "GET"])
 def stocks():
