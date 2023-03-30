@@ -42,7 +42,7 @@ def signup():
      return render_template("signup.html")
 
 
-@app.route("/stocks/", methods=["POST", "GET"])
+@app.route("/stocks", methods=["POST", "GET"])
 def stocks():
     if request.method == "POST":
         stock_symbol = request.form['stock_symbol']
