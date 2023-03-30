@@ -41,6 +41,7 @@ def signin():
 def signup():
      return render_template("signup.html")
 
+
 @app.route("/stocks/", methods=["POST", "GET"])
 def stocks():
     if request.method == "POST":
