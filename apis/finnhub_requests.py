@@ -21,5 +21,20 @@ def get_realtime_stock_data(symbol):
 
 
 # example w/ AAPL
-res = get_realtime_stock_data("AAPL")
-print(res)
+# res = get_realtime_stock_data("AAPL")
+# print(res)
+
+# res = get_realtime_stock_data("AAPL")
+# print(res)
+
+# example res
+# {
+#     "c": 162.36,
+#     "d": 1.59,
+#     "dp": 0.989,
+#     "h": 162.47,
+#     "l": 161.271,
+#     "o": 161.53,
+#     "pc": 160.77,
+#     "t": 1680206404
+# }
