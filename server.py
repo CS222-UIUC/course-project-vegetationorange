@@ -33,13 +33,36 @@ def start():
     test_object["age"] = 99
     return render_template("index.html", obj=test_object)
 
-@app.route("/signin")
+@app.route("/signin", methods = ["GET", "POST"])
 def signin():
-     return render_template("signin.html")
+    if(request.method == "GET"):
+        return render_template("signin.html")
+    elif(request.method == "POST"):
+        print("Received signin request")
+        username = request.form["username"]
+        password = request.form["password"]
+        ref = db.reference('users/')
+        if(username in ref.get() and password == ref.get()[username]["password"]):
+            print("LOGGED IN")
+        else:
+            print("NOT VALID LOGIN")
+        return render_template("signin.html")
 
-@app.route("/signup")
+@app.route("/signup", methods = ["GET", "POST"])
 def signup():
-     return render_template("signup.html")
+
+    if(request.method == "GET"):
+        return render_template("signup.html")
+    elif(request.method == "POST"):
+        username = request.form["username"]
+        password = request.form["password"]
+        ref = db.reference('users/')
+        if(username not in ref.get()):
+            ref.child(username).set({"password": password})
+            print("ACCOUNT CREATED")
+        else:
+            print("ACCOUNT DENIED")
+        return render_template("signup.html")
 
 
 @app.route("/stocks/", methods=["POST", "GET"])
