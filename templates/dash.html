@@ -72,13 +72,16 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                <p class="text-white-25">Purchase Stocks</p>
-                <form method="post" action="/stocks">
+                <h5 class="text-white-25">Purchase Stocks</h5>
+                <form method="post" action="{{url_for('purchase')}}">
+                    <input type="hidden" name = "username" value = {{ username }} />
                     <div class="form-outline form-white mb-4">
-                        <input type="text" name="stock_symbol" id="symbol" class="form-control form-control-lg" required/>
                         <label class="form-label" for="symbol">Stock Symbol</label>
+                        <input type="text" name="stock_symbol" id="symbol" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="symbol">Quantity </label>
+                        <input type= "number" name="quantity" id="quantity" class="form-control form-control-lg" required/>
                     </div>
-                    <button class="btn btn-outline-light btn-lg px-5" type="submit">Look up</button>
+                    <button class="btn btn-outline-light btn-lg px-5" type="submit">Purchase</button>
                 </form>
 
                 <div>
