@@ -65,11 +65,11 @@ def signup():
         return render_template("signup.html")
 
 
-@app.route("/stocks/", methods=["POST", "GET"])
+@app.route("/stocks", methods=["POST", "GET"])
 def stocks():
     if request.method == "POST":
         stock_symbol = request.form['stock_symbol']
-        stock_info = json.loads(apis.finnhub_requests.get_realtime_stock_data(stock_symbol))
+        stock_info = json.loads(apis.finnhub_requests.get_realtime_stock_data(stock_symbol.upper()))
         return render_template("stocks.html", stock_res=stock_info)
     else:
         temp_obj = {}

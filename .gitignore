@@ -13,3 +13,4 @@ apis/__pycache__/
 main
 myvenv/
 .DS_Store
+__pycache__/
