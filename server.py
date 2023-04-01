@@ -42,27 +42,35 @@ def signin():
         username = request.form["username"]
         password = request.form["password"]
         ref = db.reference('users/')
+        message = None
         if(username in ref.get() and password == ref.get()[username]["password"]):
-            print("LOGGED IN")
+            user_object = ref.get()[username]
+            return render_template("dash.html", username = username, info=user_object)
         else:
-            print("NOT VALID LOGIN")
-        return render_template("signin.html")
+            if(username in ref.get()):
+                message = "Incorrect Password. Try again!"
+            else:
+                message = "Username Not Found"
+        return render_template("signin.html", message = message)
 
 @app.route("/signup", methods = ["GET", "POST"])
 def signup():
 
     if(request.method == "GET"):
-        return render_template("signup.html")
+        message = ""
+        return render_template("signup.html", message = message)
     elif(request.method == "POST"):
         username = request.form["username"]
         password = request.form["password"]
         ref = db.reference('users/')
+        message = ""
         if(username not in ref.get()):
             ref.child(username).set({"password": password, "assets": {"cash": 100000}})
-            print("ACCOUNT CREATED")
+            message = "success"
         else:
+            message = "Account already found"
             print("ACCOUNT DENIED")
-        return render_template("signup.html")
+        return render_template("signup.html", message = message)
 
 
 @app.route("/stocks", methods=["POST", "GET"])
@@ -74,6 +82,26 @@ def stocks():
     else:
         temp_obj = {}
         return render_template("stocks.html", stock_res=temp_obj)
+@app.route("/purchase", methods = ["POST"])
+def purchase():
+    stock_symbol = request.form['stock_symbol']
+    quantity = float(request.form['quantity'])
+    username = request.form['username']
+    stock_info = json.loads(apis.finnhub_requests.get_realtime_stock_data(stock_symbol.upper()))
+    price = float(stock_info['c'])
+    data = db.reference('users/').get()
+    cash = float(data[username]["assets"]["cash"])
+    
+    if (cash >= price * quantity):
+        cash -= price * quantity
+        #check if stock alr exists with user
+        if stock_symbol in data[username]["assets"]:
+            quantity += data[username]["assets"][stock_symbol]
+        ref = db.reference("/users/")
+        ref.child(username).child("assets").update({"cash": cash, stock_symbol: quantity})
+    user_object = ref.get()[username]
+    return render_template("dash.html",username = username, info=user_object)
+
 
 if __name__ == '__main__':
     app.run(host="127.0.0.1", debug=True)
