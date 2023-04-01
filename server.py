@@ -42,27 +42,35 @@ def signin():
         username = request.form["username"]
         password = request.form["password"]
         ref = db.reference('users/')
+        message = None
         if(username in ref.get() and password == ref.get()[username]["password"]):
-            print("LOGGED IN")
+            user_object = ref.get()[username]
+            return render_template("dash.html", info=user_object)
         else:
-            print("NOT VALID LOGIN")
-        return render_template("signin.html")
+            if(username in ref.get()):
+                message = "Incorrect Password. Try again!"
+            else:
+                message = "Username Not Found"
+        return render_template("signin.html", message = message)
 
 @app.route("/signup", methods = ["GET", "POST"])
 def signup():
 
     if(request.method == "GET"):
-        return render_template("signup.html")
+        message = ""
+        return render_template("signup.html", message = message)
     elif(request.method == "POST"):
         username = request.form["username"]
         password = request.form["password"]
         ref = db.reference('users/')
+        message = ""
         if(username not in ref.get()):
             ref.child(username).set({"password": password, "assets": {"cash": 100000}})
             print("ACCOUNT CREATED")
         else:
+            message = "Account already found"
             print("ACCOUNT DENIED")
-        return render_template("signup.html")
+        return render_template("signup.html", message = message)
 
 
 @app.route("/stocks", methods=["POST", "GET"])
