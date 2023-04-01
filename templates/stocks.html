@@ -51,7 +51,8 @@
               <div class="mb-md-5 mt-md-4 pb-5">
 
                 <h2 class="fw-bold mb-2 text-uppercase">Stonks</h2>
-                <p class="text-white-50 mb-5">Please enter the stock you want to look up!</p>
+                <p class="text-white-50">Please enter the stock you want to look up!</p>
+                <p class="text-white-50 mb-5">Sign in to make stock purchases</p>
 
                 <form method="post" action="/stocks">
                     <div class="form-outline form-white mb-4">
@@ -59,17 +60,16 @@
 
                         <label class="form-label" for="symbol">Stock Symbol</label>
                     </div>
-
                     <button class="btn btn-outline-light btn-lg px-5" type="submit">Look up</button>
                 </form>
 
                 <div>
                     {% if 'c' in stock_res and stock_res.c != 0 %}
-                        <h3 >Current price: {{stock_res.c}}</h3>
+                        <h3 class = "mt-2">Current price: {{stock_res.c}}</h3>
                         <h3 >Daily high: {{stock_res.h}}</h3>
                         <h3 >Daily low: {{stock_res.l}}</h3>
                     {% elif 'c' in stock_res and stock_res.c == 0 %}
-                        <h3 >Please enter a valid stock</h3>
+                        <h3 >Please enter a valid stock ticket</h3>
                     {% else %}
                         <h3 ></h3>
                     {% endif %}

@@ -58,7 +58,7 @@ def signup():
         password = request.form["password"]
         ref = db.reference('users/')
         if(username not in ref.get()):
-            ref.child(username).set({"password": password})
+            ref.child(username).set({"password": password, "assets": {"cash": 100000}})
             print("ACCOUNT CREATED")
         else:
             print("ACCOUNT DENIED")
