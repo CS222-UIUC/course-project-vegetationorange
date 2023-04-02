@@ -22,23 +22,19 @@ firebase_admin.initialize_app(cred, {
 
 ref = db.reference('/')
 values = ref.get()
-print(values)
 
 #testing deployment
 
 @app.route("/")
 def start():
-    test_object = {}
-    test_object["name"] = "Orenj"
-    test_object["age"] = 99
-    return render_template("index.html", obj=test_object)
+    message = None
+    return render_template("signin.html", message=message)
 
 @app.route("/signin", methods = ["GET", "POST"])
 def signin():
     if(request.method == "GET"):
         return render_template("signin.html")
     elif(request.method == "POST"):
-        print("Received signin request")
         username = request.form["username"]
         password = request.form["password"]
         ref = db.reference('users/')
@@ -69,7 +65,6 @@ def signup():
             message = "success"
         else:
             message = "Account already found"
-            print("ACCOUNT DENIED")
         return render_template("signup.html", message = message)
 
 
@@ -84,10 +79,17 @@ def stocks():
         return render_template("stocks.html", stock_res=temp_obj)
 @app.route("/purchase", methods = ["POST"])
 def purchase():
+    message = None
     stock_symbol = request.form['stock_symbol']
     quantity = float(request.form['quantity'])
     username = request.form['username']
     stock_info = json.loads(apis.finnhub_requests.get_realtime_stock_data(stock_symbol.upper()))
+    if(stock_info['d'] == None):
+        print("Stock cannot be found")
+        message = "Stock cannot be found"
+        ref = db.reference("/users/")
+        user_object = ref.get()[username]
+        return render_template("dash.html", message=message, username=username, info=user_object)
     price = float(stock_info['c'])
     data = db.reference('users/').get()
     cash = float(data[username]["assets"]["cash"])
@@ -99,8 +101,11 @@ def purchase():
             quantity += data[username]["assets"][stock_symbol]
         ref = db.reference("/users/")
         ref.child(username).child("assets").update({"cash": cash, stock_symbol: quantity})
+    else:
+        message = "You do not have enough cash to purchase this stock"
+
     user_object = ref.get()[username]
-    return render_template("dash.html",username = username, info=user_object)
+    return render_template("dash.html",message=message, username = username, info=user_object)
 
 
 if __name__ == '__main__':
