@@ -37,9 +37,9 @@ def user_stock_info(object):
             continue
         #find price of stock
         stock_info = json.loads(apis.finnhub_requests.get_realtime_stock_data(key.upper()))
-        price = round(stock_info['c'], 2)
+        price = stock_info['c']
         net_worth += price * value
-        rv[key] = (price * value, int(value))
+        rv[key] = (round(price * value, 2), int(value))
     print(rv)
     return net_worth, rv
 
@@ -99,7 +99,7 @@ def stocks():
 @app.route("/purchase", methods = ["POST"])
 def purchase():
     message = None
-    stock_symbol = request.form['stock_symbol']
+    stock_symbol = request.form['stock_symbol'].upper()
     quantity = float(request.form['quantity'])
     username = request.form['username']
     stock_info = json.loads(apis.finnhub_requests.get_realtime_stock_data(stock_symbol.upper()))
