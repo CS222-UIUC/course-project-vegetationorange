@@ -130,6 +130,56 @@ def purchase():
     return render_template("dash.html",message=message, username = username, info=new_obj, net_worth=net_worth)
 
 
+@app.route("/sell", methods = ["POST"])
+def sell():
+    message = None
+    stock_symbol = request.form['stock_symbol'].upper()
+    quantity = float(request.form['quantity'])
+    username = request.form['username']
+    stock_info = json.loads(apis.finnhub_requests.get_realtime_stock_data(stock_symbol.upper()))
+    data = db.reference('users/').get()
+    if(stock_info['d'] == None):
+        print("Stock cannot be found")
+        message = "Stock cannot be found"
+        ref = db.reference("/users/")
+        user_object = ref.get()[username]
+        net_worth, new_obj = user_stock_info(user_object)
+        return render_template("dash.html", message=message, username=username, info=new_obj, net_worth = net_worth)
+    if (stock_symbol not in data[username]["assets"]):
+        print("You don't own this stock")
+        message = "You don't own this stock"
+        ref = db.reference("/users/")
+        user_object = ref.get()[username]
+        net_worth, new_obj = user_stock_info(user_object)
+        return render_template("dash.html", message=message, username=username, info=new_obj, net_worth = net_worth) 
+
+    price = float(stock_info['c'])
+    cash = float(data[username]["assets"]["cash"])
+    
+    cash += price * quantity
+    quantity = data[username]["assets"][stock_symbol] - quantity
+    if quantity == 0:
+        ref = db.reference("/users/")
+        stock = ref.child(username).child("assets").child(stock_symbol)
+        stock.delete()
+        ref.child(username).child("assets").update({"cash": cash})
+    elif quantity < 0:
+        print("You do not own enough of this stock")
+        message = "You do not own enough of this stock"
+        ref = db.reference("/users/")
+        user_object = ref.get()[username]
+        net_worth, new_obj = user_stock_info(user_object)
+        return render_template("dash.html", message=message, username=username, info=new_obj, net_worth = net_worth)
+    else:
+        ref = db.reference("/users/")
+        ref.child(username).child("assets").update({"cash": cash, stock_symbol: quantity})
+
+    user_object = ref.get()[username]
+    net_worth, new_obj = user_stock_info(user_object)
+    return render_template("dash.html",message=message, username = username, info=new_obj, net_worth=net_worth)
+
+    
+
 if __name__ == '__main__':
     app.run(host="127.0.0.1", debug=True)
 

@@ -86,9 +86,21 @@
                         <label class="form-label" for="symbol">Stock Symbol</label>
                         <input type="text" name="stock_symbol" id="symbol" class="form-control form-control-lg" required/>
                         <label class="form-label" for="symbol">Quantity </label>
-                        <input type= "number" name="quantity" id="quantity" class="form-control form-control-lg" required/>
+                        <input type= "number" name="quantity" id="quantity" min="1" class="form-control form-control-lg" required/>
                     </div>
                     <button class="btn btn-outline-light btn-lg px-5" type="submit">Purchase</button>
+                </form>
+                <br>
+                <h5 class="text-white-25">Sell Stocks</h5>
+                <form method="post" action="{{url_for('sell')}}">
+                    <input type="hidden" name = "username" value = {{ username }} />
+                    <div class="form-outline form-white mb-4">
+                        <label class="form-label" for="symbol">Stock Symbol</label>
+                        <input type="text" name="stock_symbol" id="symbol" class="form-control form-control-lg" required/>
+                        <label class="form-label" for="symbol">Quantity </label>
+                        <input type= "number" name="quantity" id="quantity" min="1" class="form-control form-control-lg" required/>
+                    </div>
+                    <button class="btn btn-outline-light btn-lg px-5" type="submit">Sell</button>
                 </form>
 
                 <div>
