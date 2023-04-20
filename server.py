@@ -178,10 +178,14 @@ def sell():
     net_worth, new_obj = user_stock_info(user_object)
     return render_template("dash.html",message=message, username = username, info=new_obj, net_worth=net_worth)
 
+@app.route('/leaderboard')
+def leaderboard():
+    return render_template('leaderboard.html')
 
 @app.route('/<path:path>')
 def catch_all(path):
     return render_template("404.html", path=path)
+
 
 
 if __name__ == '__main__':
