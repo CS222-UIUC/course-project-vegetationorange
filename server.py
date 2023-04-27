@@ -90,9 +90,14 @@ def signup():
 @app.route("/stocks", methods=["POST", "GET"])
 def stocks():
     if request.method == "POST":
-        stock_symbol = request.form['stock_symbol']
+        stock_symbol = request.form.get('stock_symbol', None)
+        if not stock_symbol:
+            return "No stock symbol passed!", 400
         stock_info = json.loads(apis.finnhub_requests.get_realtime_stock_data(stock_symbol.upper()))
-        return render_template("stocks.html", stock_res=stock_info)
+        print(stock_info, flush=True)
+        if 'c' in stock_info and stock_info['c'] != 0: # test for validity of response
+            return render_template("stocks.html", stock_res=stock_info), 200 # valid stock
+        return render_template("stocks.html", stock_res=stock_info), 202 # invalid stock
     else:
         temp_obj = {}
         return render_template("stocks.html", stock_res=temp_obj)
