@@ -1,62 +1,46 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Leaderboard</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
-<body>
-	<h1>Leaderboard</h1>
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Rank</th>
-				<th>Name</th>
-				<th>Score</th>
-			</tr>
-		</thead>
-		<tbody id="leaderboard-body">
-		</tbody>
-	</table>
+  <head>
+    <meta charset="UTF-8">
+    <title>Leaderboard</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th, td {
+        text-align: left;
+        padding: 8px;
+      }
+      th {
+        background-color: #4CAF50;
+        color: white;
+      }
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Leaderboard</h1>
+    <button onclick="refreshLeaderboard()">Refresh</button>
+    <div id="leaderboard"></div>
 
-	<!-- Firebase SDK -->
-	<script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-database.js"></script>
-
-	<script>
-		// Initialize Firebase
-        const firebaseConfig = {
-        apiKey: "AIzaSyDLtNSujmY09nSwqaJGStYAF03_8u1adBQ",
-        authDomain: "stonks-42c27.firebaseapp.com",
-        databaseURL: "https://stonks-42c27-default-rtdb.firebaseio.com",
-        projectId: "stonks-42c27",
-        storageBucket: "stonks-42c27.appspot.com",
-        messagingSenderId: "352353880892",
-        appId: "1:352353880892:web:ad7f3b8a0a733705952c39",
-        measurementId: "G-7XZ7S4TMGD"
+    <script>
+      function refreshLeaderboard() {
+        // Make a POST request to the Flask endpoint
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/leaderboard");
+        xhr.onload = function() {
+          // Parse the response and generate the leaderboard table
+          var tableData = xhr.responseText;
+          var leaderboardDiv = document.getElementById("leaderboard");
+          leaderboardDiv.innerHTML = tableData;
         };
-
-		firebase.initializeApp(firebaseConfig);
-
-		// Get leaderboard data from Firebase
-		const leaderboardRef = firebase.database().ref('leaderboard');
-		leaderboardRef.on('value', (snapshot) => {
-			const leaderboardData = snapshot.val();
-
-			// Format the data and populate the table
-			let rank = 1;
-			let tableHtml = '';
-			Object.entries(leaderboardData).sort((a, b) => b[1].score - a[1].score).forEach(([key, value]) => {
-				tableHtml += `
-					<tr>
-						<td>${rank}</td>
-						<td>${value.name}</td>
-						<td>${value.score}</td>
-					</tr>
-				`;
-				rank++;
-			});
-			document.getElementById('leaderboard-body').innerHTML = tableHtml;
-		});
-	</script>
-</body>
+        xhr.send();
+      }
+      // Load the leaderboard when the page is first loaded
+      refreshLeaderboard();
+    </script>
+  </body>
 </html>
