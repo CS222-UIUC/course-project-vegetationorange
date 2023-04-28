@@ -48,6 +48,10 @@ def start():
     message = None
     return render_template("signin.html", message=message)
 
+@app.route("/dash_new", methods = ["GET"])
+def dash_new():
+    return render_template("dash_remake.html")
+
 @app.route("/signin", methods = ["GET", "POST"])
 def signin():
     if(request.method == "GET"):
@@ -182,7 +186,6 @@ def sell():
     user_object = ref.get()[username]
     net_worth, new_obj = user_stock_info(user_object)
     return render_template("dash.html",message=message, username = username, info=new_obj, net_worth=net_worth)
-
 
 @app.route('/<path:path>')
 def catch_all(path):
