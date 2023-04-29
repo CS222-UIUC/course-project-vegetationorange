@@ -53,6 +53,10 @@ def start():
     message = None
     return render_template("signin.html", message=message)
 
+@app.route("/dash_new", methods = ["GET"])
+def dash_new():
+    return render_template("dash_remake.html")
+
 @app.route("/signin", methods = ["GET", "POST"])
 def signin():
     if(request.method == "GET"):
@@ -95,9 +99,14 @@ def signup():
 @app.route("/stocks", methods=["POST", "GET"])
 def stocks():
     if request.method == "POST":
-        stock_symbol = request.form['stock_symbol']
+        stock_symbol = request.form.get('stock_symbol', None)
+        if not stock_symbol:
+            return "No stock symbol passed!", 400
         stock_info = json.loads(apis.finnhub_requests.get_realtime_stock_data(stock_symbol.upper()))
-        return render_template("stocks.html", stock_res=stock_info)
+        print(stock_info, flush=True)
+        if 'c' in stock_info and stock_info['c'] != 0: # test for validity of response
+            return render_template("stocks.html", stock_res=stock_info), 200 # valid stock
+        return render_template("stocks.html", stock_res=stock_info), 202 # invalid stock
     else:
         temp_obj = {}
         return render_template("stocks.html", stock_res=temp_obj)
@@ -210,9 +219,6 @@ def leaderboard():
         print(ref)
         return render_template("leaderboard.html")
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
 
 @app.route('/<path:path>')
 def catch_all(path):
