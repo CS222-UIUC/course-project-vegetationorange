@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Leaderboard</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th, td {
+        text-align: left;
+        padding: 8px;
+      }
+      th {
+        background-color: #4CAF50;
+        color: white;
+      }
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Leaderboard</h1>
+    <button onclick="refreshLeaderboard()">Refresh</button>
+    <div id="leaderboard"></div>
+
+    <script>
+      function refreshLeaderboard() {
+        // Make a POST request to the Flask endpoint
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/leaderboard");
+        xhr.onload = function() {
+          // Parse the response and generate the leaderboard table
+          var tableData = xhr.responseText;
+          var leaderboardDiv = document.getElementById("leaderboard");
+          leaderboardDiv.innerHTML = tableData;
+        };
+        xhr.send();
+      }
+      // Load the leaderboard when the page is first loaded
+      refreshLeaderboard();
+    </script>
+  </body>
+</html>
