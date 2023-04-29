@@ -198,10 +198,16 @@ def leaderboard():
         # Retrieve user data and calculate net worth
 
         data = db.reference('users/').get()
+        ref = db.reference('users/')
 
         leaderboard = {}
+
+        
         for username in data:
-            cash = float(data[username]["assets"]["cash"])
+
+            user_object = ref.get()[username]
+            net_worth, new_obj = user_stock_info(user_object)
+            cash = net_worth
             leaderboard[username] = cash
 
         sorted_leaderboard = dict(sorted(leaderboard.items(), key=lambda item: item[1], reverse=True))
@@ -218,6 +224,8 @@ def leaderboard():
         ref = db.reference("/users/")
         print(ref)
         return render_template("leaderboard.html")
+    
+
 
 
 @app.route('/<path:path>')
