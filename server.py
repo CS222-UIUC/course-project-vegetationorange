@@ -44,9 +44,13 @@ def user_stock_info(object):
             continue
         #find price of stock
         stock_info = json.loads(apis.finnhub_requests.get_realtime_stock_data(key.upper()))
-        price = stock_info['c']
-        net_worth += price * value
-        rv[key] = (round(price * value, 2), int(value))
+        try:
+            price = stock_info['c']
+            net_worth += price * value
+            rv[key] = (round(price * value, 2), int(value))
+        except:
+            print("Error with this: ", stock_info)
+            # print("erorr with API")
     print(rv)
     net_worth = round(net_worth, 2)
     return net_worth, rv
@@ -83,6 +87,8 @@ def signin():
         if(username in ref.get() and password == ref.get()[username]["password"]):
             user_object = ref.get()[username]
             net_worth, new_obj = user_stock_info(user_object)
+            cached_networth = db.reference("net_worth")
+            cached_networth.child(username).update({"networth": net_worth})
             return render_template("dash_v2.html", username = username, info=new_obj, net_worth=net_worth)
         else:
             if(username in ref.get()):
@@ -210,7 +216,7 @@ def sell():
     net_worth, new_obj = user_stock_info(user_object)
     return render_template("dash_v2.html",message=message, username = username, info=new_obj, net_worth=net_worth)
 
-@app.route('/leaderboard', methods=['POST', 'GET'])
+@app.route('/leaderboard', methods=['GET'])
 def leaderboard():
     global username
     if request.method == "POST":
@@ -225,18 +231,29 @@ def leaderboard():
 
         sorted_leaderboard = dict(sorted(leaderboard.items(), key=lambda item: item[1], reverse=True))
 
-        # Create an HTML table string
-        table = '<table>\n<tr><th>Name</th><th>Net Worth</th></tr>\n'
-        for user, net_worth in sorted_leaderboard.items():
-            table += f'<tr><td>{user}</td><td>{net_worth:.2f}</td></tr>\n'
-        table += '</table>'
+    data = db.reference('net_worth/').get()
+    leaderboard = {}
+    print(data)
+    
+    for username in data:
+        cash = float(data[username]["networth"])
+        leaderboard[username] = cash
 
-        # Return the HTML table as a response
-        return table, 200, {'Content-Type': 'text/html'}
-    else:
-        ref = db.reference("/users/")
-        print(ref)
-        return render_template("leaderboard.html")
+
+    sorted_leaderboard = sorted(leaderboard.items(), key=lambda item: item[1], reverse=True)
+    print(sorted_leaderboard)
+    # Create an HTML table string
+    # table = '<table>\n<tr><th>Name</th><th>Net Worth</th></tr>\n'
+    # for user, net_worth in sorted_leaderboard.items():
+    #     table += f'<tr><td>{user}</td><td>{net_worth:.2f}</td></tr>\n'
+    # table += '</table>'
+
+    # # Return the HTML table as a response
+    return render_template("leaderboard.html", table=sorted_leaderboard)
+    # return table, 200, {'Content-Type': 'text/html'}
+    # return "Hiiii"
+    
+
 
 
 @app.route('/<path:path>')
