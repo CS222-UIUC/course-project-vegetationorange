@@ -42,10 +42,15 @@ def user_stock_info(object):
             continue
         #find price of stock
         stock_info = json.loads(apis.finnhub_requests.get_realtime_stock_data(key.upper()))
-        price = stock_info['c']
-        net_worth += price * value
-        rv[key] = (round(price * value, 2), int(value))
+        try:
+            price = stock_info['c']
+            net_worth += price * value
+            rv[key] = (round(price * value, 2), int(value))
+        except:
+            print("Error with this: ", stock_info)
+            # print("erorr with API")
     print(rv)
+    net_worth = round(net_worth, 2)
     return net_worth, rv
 
 @app.route("/")
@@ -55,7 +60,7 @@ def start():
 
 @app.route("/dash_new", methods = ["GET"])
 def dash_new():
-    return render_template("dash_remake.html")
+    return render_template("dash_v2.html")
 
 @app.route("/signin", methods = ["GET", "POST"])
 def signin():
@@ -69,7 +74,9 @@ def signin():
         if(username in ref.get() and password == ref.get()[username]["password"]):
             user_object = ref.get()[username]
             net_worth, new_obj = user_stock_info(user_object)
-            return render_template("dash.html", username = username, info=new_obj, net_worth=net_worth)
+            cached_networth = db.reference("net_worth")
+            cached_networth.child(username).update({"networth": net_worth})
+            return render_template("dash_v2.html", username = username, info=new_obj, net_worth=net_worth)
         else:
             if(username in ref.get()):
                 message = "Incorrect Password. Try again!"
@@ -123,7 +130,7 @@ def purchase():
         ref = db.reference("/users/")
         user_object = ref.get()[username]
         net_worth, new_obj = user_stock_info(user_object)
-        return render_template("dash.html", message=message, username=username, info=new_obj, net_worth = net_worth)
+        return render_template("dash_v2.html", message=message, username=username, info=new_obj, net_worth = net_worth)
     price = float(stock_info['c'])
     data = db.reference('users/').get()
     cash = float(data[username]["assets"]["cash"])
@@ -141,7 +148,7 @@ def purchase():
 
     user_object = ref.get()[username]
     net_worth, new_obj = user_stock_info(user_object)
-    return render_template("dash.html",message=message, username = username, info=new_obj, net_worth=net_worth)
+    return render_template("dash_v2.html",message=message, username = username, info=new_obj, net_worth=net_worth)
 
 
 @app.route("/sell", methods = ["POST"])
@@ -158,14 +165,14 @@ def sell():
         ref = db.reference("/users/")
         user_object = ref.get()[username]
         net_worth, new_obj = user_stock_info(user_object)
-        return render_template("dash.html", message=message, username=username, info=new_obj, net_worth = net_worth)
+        return render_template("dash_v2.html", message=message, username=username, info=new_obj, net_worth = net_worth)
     if (stock_symbol not in data[username]["assets"]):
         print("You don't own this stock")
         message = "You don't own this stock"
         ref = db.reference("/users/")
         user_object = ref.get()[username]
         net_worth, new_obj = user_stock_info(user_object)
-        return render_template("dash.html", message=message, username=username, info=new_obj, net_worth = net_worth) 
+        return render_template("dash_v2.html", message=message, username=username, info=new_obj, net_worth = net_worth) 
 
     price = float(stock_info['c'])
     cash = float(data[username]["assets"]["cash"])
@@ -183,14 +190,14 @@ def sell():
         ref = db.reference("/users/")
         user_object = ref.get()[username]
         net_worth, new_obj = user_stock_info(user_object)
-        return render_template("dash.html", message=message, username=username, info=new_obj, net_worth = net_worth)
+        return render_template("dash_v2.html", message=message, username=username, info=new_obj, net_worth = net_worth)
     else:
         ref = db.reference("/users/")
         ref.child(username).child("assets").update({"cash": cash, stock_symbol: quantity})
 
     user_object = ref.get()[username]
     net_worth, new_obj = user_stock_info(user_object)
-    return render_template("dash.html",message=message, username = username, info=new_obj, net_worth=net_worth)
+    return render_template("dash_v2.html",message=message, username = username, info=new_obj, net_worth=net_worth)
 
 @app.route('/leaderboard', methods=['POST', 'GET'])
 def leaderboard():
@@ -199,7 +206,7 @@ def leaderboard():
 
         data = db.reference('net_worth/').get()
         leaderboard = {}
-
+        print(data)
         
         for username in data:
             cash = float(data[username]["networth"])
