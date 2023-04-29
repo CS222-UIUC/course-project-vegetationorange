@@ -46,6 +46,7 @@ def user_stock_info(object):
         net_worth += price * value
         rv[key] = (round(price * value, 2), int(value))
     print(rv)
+    net_worth = round(net_worth, 2)
     return net_worth, rv
 
 @app.route("/")
