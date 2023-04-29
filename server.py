@@ -47,7 +47,8 @@ def user_stock_info(object):
             net_worth += price * value
             rv[key] = (round(price * value, 2), int(value))
         except:
-            print("erorr with API")
+            print("Error with this: ", stock_info)
+            # print("erorr with API")
     print(rv)
     net_worth = round(net_worth, 2)
     return net_worth, rv
@@ -73,6 +74,8 @@ def signin():
         if(username in ref.get() and password == ref.get()[username]["password"]):
             user_object = ref.get()[username]
             net_worth, new_obj = user_stock_info(user_object)
+            cached_networth = db.reference("net_worth")
+            cached_networth.child(username).update({"networth": net_worth})
             return render_template("dash_v2.html", username = username, info=new_obj, net_worth=net_worth)
         else:
             if(username in ref.get()):
@@ -201,18 +204,14 @@ def leaderboard():
     if request.method == "POST":
         # Retrieve user data and calculate net worth
 
-        data = db.reference('users/').get()
-        ref = db.reference('users/')
+        data = db.reference('net_worth/').get()
+        # ref = db.reference('users/')
 
         leaderboard = {}
-
+        print(data)
         
         for username in data:
-
-            user_object = ref.get()[username]
-            net_worth, new_obj = user_stock_info(user_object)
-            cash = net_worth
-            leaderboard[username] = cash
+            leaderboard[username] = data[username]["networth"]
 
         sorted_leaderboard = dict(sorted(leaderboard.items(), key=lambda item: item[1], reverse=True))
 
