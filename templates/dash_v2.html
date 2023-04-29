@@ -42,6 +42,13 @@
         --bs-bg-opacity: 1;
         background-color: rgba(var(--bs-dark-rgb),var(--bs-bg-opacity))!important;
       }
+
+      .centered-div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 25px;
+      }
     </style>
   </head>
   <body class="vh-100 gradient-custom">
@@ -53,20 +60,26 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav">
-              <li class="nav-item active">
-                  <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item">
-                  <a class="nav-link" href="#">Features</a>
+              <li id="get-li">
+                <a class="nav-link">Home</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="/stocks">Stock Lookup</a>
               </li>
               <li class="nav-item">
-                  <a class="nav-link disabled" href="#">Disabled</a>
+                <a class="nav-link" href="/leaderboard">Leaderboard</a>
               </li>
               </ul>
           </div>
+          
+          <!-- JavaScript code to make the GET request -->
+          <script>
+            document.getElementById("get-li").addEventListener("click", function() {
+              var param1 = "{{username}}";
+              var url = "http://127.0.0.1:5000/home?username=" + param1;
+              window.location.href = url;
+            });
+          </script>
       </div>
     </nav>
     {% if message %}
@@ -139,6 +152,9 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="centered-div">
+      <a href="{{ url_for('signin') }}" class="text-white-50 fw-bold">Sign Out</a>
     </div>
   </body>
 </html>

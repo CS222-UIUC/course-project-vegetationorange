@@ -13,6 +13,8 @@ import json
 
 f = open("SECRET.json")
 data = json.load(f)
+global username
+username = None
 
 
 app = Flask(__name__)
@@ -54,15 +56,26 @@ def start():
     message = None
     return render_template("signin.html", message=message)
 
+@app.route("/home")
+def home():
+    global username
+    username = request.args["username"]
+    ref = db.reference("/users/")
+    user_object = ref.get()[username]
+    net_worth, new_obj = user_stock_info(user_object)
+    return render_template("dash_v2.html", username = username, info=new_obj, net_worth=net_worth)
+
 @app.route("/dash_new", methods = ["GET"])
 def dash_new():
     return render_template("dash_v2.html")
+
 
 @app.route("/signin", methods = ["GET", "POST"])
 def signin():
     if(request.method == "GET"):
         return render_template("signin.html")
     elif(request.method == "POST"):
+        global username
         username = request.form["username"]
         password = request.form["password"]
         ref = db.reference('users/')
@@ -80,7 +93,7 @@ def signin():
 
 @app.route("/signup", methods = ["GET", "POST"])
 def signup():
-
+    global username
     if(request.method == "GET"):
         message = ""
         return render_template("signup.html", message = message)
@@ -99,6 +112,7 @@ def signup():
 
 @app.route("/stocks", methods=["POST", "GET"])
 def stocks():
+    global username
     if request.method == "POST":
         stock_symbol = request.form.get('stock_symbol', None)
         if not stock_symbol:
@@ -106,13 +120,15 @@ def stocks():
         stock_info = json.loads(apis.finnhub_requests.get_realtime_stock_data(stock_symbol.upper()))
         print(stock_info, flush=True)
         if 'c' in stock_info and stock_info['c'] != 0: # test for validity of response
-            return render_template("stocks.html", stock_res=stock_info), 200 # valid stock
-        return render_template("stocks.html", stock_res=stock_info), 202 # invalid stock
+            return render_template("stocks.html", stock_res=stock_info, username=username), 200 # valid stock
+        return render_template("stocks.html", stock_res=stock_info, username=username), 202 # invalid stock
     else:
+        # username = request.args["username"]
         temp_obj = {}
-        return render_template("stocks.html", stock_res=temp_obj)
+        return render_template("stocks.html", stock_res=temp_obj, username=username)
 @app.route("/purchase", methods = ["POST"])
 def purchase():
+    global username
     message = None
     stock_symbol = request.form['stock_symbol'].upper()
     quantity = float(request.form['quantity'])
@@ -147,6 +163,7 @@ def purchase():
 
 @app.route("/sell", methods = ["POST"])
 def sell():
+    global username
     message = None
     stock_symbol = request.form['stock_symbol'].upper()
     quantity = float(request.form['quantity'])
@@ -195,6 +212,7 @@ def sell():
 
 @app.route('/leaderboard', methods=['POST', 'GET'])
 def leaderboard():
+    global username
     if request.method == "POST":
         # Retrieve user data and calculate net worth
 
