@@ -205,13 +205,12 @@ def leaderboard():
         # Retrieve user data and calculate net worth
 
         data = db.reference('net_worth/').get()
-        # ref = db.reference('users/')
-
         leaderboard = {}
         print(data)
         
         for username in data:
-            leaderboard[username] = data[username]["networth"]
+            cash = float(data[username]["networth"])
+            leaderboard[username] = cash
 
         sorted_leaderboard = dict(sorted(leaderboard.items(), key=lambda item: item[1], reverse=True))
 
