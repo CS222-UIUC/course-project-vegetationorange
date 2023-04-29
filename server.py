@@ -199,33 +199,31 @@ def sell():
     net_worth, new_obj = user_stock_info(user_object)
     return render_template("dash_v2.html",message=message, username = username, info=new_obj, net_worth=net_worth)
 
-@app.route('/leaderboard', methods=['POST', 'GET'])
+@app.route('/leaderboard', methods=['GET'])
 def leaderboard():
-    if request.method == "POST":
-        # Retrieve user data and calculate net worth
+    # Retrieve user data and calculate net worth
 
-        data = db.reference('net_worth/').get()
-        leaderboard = {}
-        print(data)
-        
-        for username in data:
-            cash = float(data[username]["networth"])
-            leaderboard[username] = cash
+    data = db.reference('net_worth/').get()
+    leaderboard = {}
+    print(data)
+    
+    for username in data:
+        cash = float(data[username]["networth"])
+        leaderboard[username] = cash
 
-        sorted_leaderboard = dict(sorted(leaderboard.items(), key=lambda item: item[1], reverse=True))
 
-        # Create an HTML table string
-        table = '<table>\n<tr><th>Name</th><th>Net Worth</th></tr>\n'
-        for user, net_worth in sorted_leaderboard.items():
-            table += f'<tr><td>{user}</td><td>{net_worth:.2f}</td></tr>\n'
-        table += '</table>'
+    sorted_leaderboard = sorted(leaderboard.items(), key=lambda item: item[1], reverse=True)
+    print(sorted_leaderboard)
+    # Create an HTML table string
+    # table = '<table>\n<tr><th>Name</th><th>Net Worth</th></tr>\n'
+    # for user, net_worth in sorted_leaderboard.items():
+    #     table += f'<tr><td>{user}</td><td>{net_worth:.2f}</td></tr>\n'
+    # table += '</table>'
 
-        # Return the HTML table as a response
-        return table, 200, {'Content-Type': 'text/html'}
-    else:
-        ref = db.reference("/users/")
-        print(ref)
-        return render_template("leaderboard.html")
+    # # Return the HTML table as a response
+    return render_template("leaderboard.html", table=sorted_leaderboard)
+    # return table, 200, {'Content-Type': 'text/html'}
+    # return "Hiiii"
     
 
 
