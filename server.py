@@ -42,9 +42,12 @@ def user_stock_info(object):
             continue
         #find price of stock
         stock_info = json.loads(apis.finnhub_requests.get_realtime_stock_data(key.upper()))
-        price = stock_info['c']
-        net_worth += price * value
-        rv[key] = (round(price * value, 2), int(value))
+        try:
+            price = stock_info['c']
+            net_worth += price * value
+            rv[key] = (round(price * value, 2), int(value))
+        except:
+            print("erorr with API")
     print(rv)
     net_worth = round(net_worth, 2)
     return net_worth, rv
