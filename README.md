@@ -1,7 +1,5 @@
 # Stonks
 Students often have keen interests in financial literacy but lack the funds to have real world experience. Stonks lets students have a gamified (competitive) yet safe space to learn how the stock market functions by trading while competing against other students. 
-Our project is a competitive yet safe space to learn about investing in a fun and engaging way.
-Users compete with others to rake in the highest profit by buying and selling stocks.
 While similar projects exist, our solution is highly user-friendly with a focus on modern design and quick actions.
 
 ## Built With
