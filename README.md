@@ -1,5 +1,15 @@
 # Stonks
 Students often have keen interests in financial literacy but lack the funds to have real world experience. Stonks lets students have a gamified (competitive) yet safe space to learn how the stock market functions by trading while competing against other students. 
+Our project is a competitive yet safe space to learn about investing in a fun and engaging way.
+Users compete with others to rake in the highest profit by buying and selling stocks.
+While similar projects exist, our solution is highly user-friendly with a focus on modern design and quick actions.
+
+## Built With
+1. Flask (backend)
+2. Firebase (database)
+3. Finnhub as Public Stock API (data)
+4. Bootstrap and Jinja templates (frontend)
+
 
 ## Setup
 1. Acquire project permissions
@@ -13,8 +23,4 @@ Students often have keen interests in financial literacy but lack the funds to h
         2. Alternatively install requirements globally or isolated manually (not recommended unless you know what you're doing)
 4. To start up the project, launch virtual environment (default after setup in VSCode) and run ```python3 server.py ```
 
-## Built With
-1. Flask (backend)
-2. Firebase (database)
-3. Public Stock API (data)
-4. Bootstrap and Jinja templates (frontend)
+Developed by Shlok Mehrotra, Ritvik Banakar, Anay Bhakat, and Sayan Sisodiya
