@@ -23,4 +23,4 @@ While similar projects exist, our solution is highly user-friendly with a focus 
 4. To start up the project, launch virtual environment (default after setup in VSCode) and run ```python3 server.py ```.
 5. Once the server starts up, click the link in the terminal to open the Stonks app in your browser. You're all set!
 
-Developed by Shlok Mehrotra, Ritvik Banakar, Anay Bhakat, and Sayan Sisodiya. All four members worked on the frontend and backend.
+Developed by Shlok Mehrotra, Ritvik Banakar, Anay Bhakat, and Sayan Sisodiya. Everyone worked on the backend. Shlok, Ritvik, and Anay worked on firebase integration. Shlok and Sayan worked on the frontend, and Sayan worked on API integration.
