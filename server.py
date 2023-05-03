@@ -249,7 +249,7 @@ def leaderboard():
     # table += '</table>'
 
     # # Return the HTML table as a response
-    return render_template("leaderboard.html", table=sorted_leaderboard)
+    return render_template("leaderboard.html", username=username, table=sorted_leaderboard)
     # return table, 200, {'Content-Type': 'text/html'}
     # return "Hiiii"
     
